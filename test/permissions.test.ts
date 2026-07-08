@@ -141,6 +141,17 @@ describe("checkWritePermissions", () => {
     expect(result).toBe(true);
   });
 
+  test("should deny unlisted bot user without write permissions", async () => {
+    const mockOctokit = createMockOctokit("none");
+    const context = createContext();
+    context.actor = "SpellChecker[bot]";
+    context.inputs.allowedBots = "stainless-app";
+
+    const result = await checkWritePermissions(mockOctokit, context);
+
+    expect(result).toBe(false);
+  });
+
   test("should throw error when permission check fails", async () => {
     const error = new Error("API error");
     const mockOctokit = {
